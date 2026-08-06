@@ -1,0 +1,50 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+*.wsp
+
+build/
+.vs/
+Release/
+ReleaseIntermediate/
+Debug/
+DebugIntermediate/
+lib/
+/CK3toEU5.sln.DotSettings.user
+
+# Exception for exe files used in tests
+
+!data/test_files/test_folders/ck3_folder/binaries/ck3.exe
+!data/test_files/test_folders/eu5_folder/binaries/eu5.exe
+!data/test_files/test_folders/ck3_folder_with_version/binaries/ck3.exe
+__pycache__/

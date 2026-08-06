@@ -1,0 +1,15 @@
+l_german:
+ YES: "Ja"
+ NO: "Nein"
+ MODNAME: "Mod Output Name (optional):"
+ MODNAMETIP: "Bitte halten Sie sich an lateinische Buchstaben"
+ MODNAMETIP2: "Optionaler Name fÃ¼r den konvertierten Mod (Standardname ist derselbe des Savegames)"
+ DEBUG: "Debug (nur fÃ¼r Test / Entwicklung)"
+ DEBUGTIP: "Gibt an, ob ein Debug-Mod ausgegeben werden soll oder nicht."
+ DEBUGNOTIP: "Gib einen normalen Mod aus."
+ DEBUGYESTIP: "Gib einen Debug-Mod aus."
+ DYNAMIC_RESOURCES: "Dynamisch Ressourcen"
+ DYNAMIC_RESOURCESTIP: "Ob Ressourcen aus dem Victoria-Speicher konvertiert werden sollen."
+ DYNAMIC_RESOURCESNOTIP: "Statische, historische Ressourcen."
+ DYNAMIC_RESOURCESYESTIP: "Ressourcen aus Victoria-Gebäuden."
+ 
