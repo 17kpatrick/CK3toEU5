@@ -18,12 +18,18 @@ void CK3::House::registerKeys()
 	registerKeyword("name", [this](const std::string&, std::istream& theStream) {
 		name = commonItems::singleString(theStream).getString();
 	});
-	registerKeyword("localized_name", [this](const std::string&, std::istream& theStream) {
+	const auto parseLocalizedName = [this](const std::string&, std::istream& theStream) {
 		localizedName = commonItems::singleString(theStream).getString();
-	});
-	registerKeyword("prefix", [this](const std::string&, std::istream& theStream) {
+	};
+	registerKeyword("localized_name", parseLocalizedName);
+	// CK3 1.19+: rakaly doesn't know the localized_name token, so melted saves write this instead.
+	registerKeyword("__unknown_0xcd3", parseLocalizedName);
+	const auto parsePrefix = [this](const std::string&, std::istream& theStream) {
 		prefix = commonItems::singleString(theStream).getString();
-	});
+	};
+	registerKeyword("prefix", parsePrefix);
+	// Same 1.19 melt gap for house name prefixes ("dynnp_de", etc.).
+	registerKeyword("__unknown_0xccd", parsePrefix);
 	registerKeyword("dynasty", [this](const std::string&, std::istream& theStream) {
 		dynasty = std::make_pair(commonItems::singleLlong(theStream).getLlong(), nullptr);
 	});

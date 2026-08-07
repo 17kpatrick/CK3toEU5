@@ -95,6 +95,20 @@ std::string artTypeForVisual(const std::string& visualType)
 	return "regalia"; // crowns, thrones, weapons, armor, jewelry...
 }
 
+// Exit autosaves often ship a useless meta_coat_of_arms (solid black + _default.dds). Applying that
+// overwrites the title/dynasty arms we already resolved and leaves EU5 showing a purple "?".
+bool isPlaceholderCoA(const CK3::CoatOfArms& coa)
+{
+	const auto& emblems = coa.getTexturedEmblems();
+	if (emblems.size() != 1 || !coa.getColoredEmblems().empty() || !coa.getSubs().empty())
+		return false;
+	const auto& texture = emblems.front().getTexture();
+	if (!texture || *texture != "_default.dds")
+		return false;
+	const auto& pattern = coa.getPattern();
+	return !pattern || *pattern == "pattern_solid.dds";
+}
+
 // Nearly every CK3 artifact carries flavour text of its own, which is what the EU5 tooltip should
 // show. The few that don't get a line assembled from what the save does record about them.
 std::string describeArtifact(const CK3::Artifact& artifact)
@@ -975,8 +989,10 @@ void EU5::World::resolveCountryIdentity(const CK3::World& sourceWorld,
 		if (house->getDynasty().second && house->getDynasty().second->getCoA() && house->getDynasty().second->getCoA()->second)
 			country.coa = house->getDynasty().second->getCoA()->second;
 	}
-	// The player realm's displayed arms are stored verbatim in the save metadata - the best source there is.
-	if (sourceWorld.getPlayerTitle() && *sourceWorld.getPlayerTitle() == country.ck3Title && sourceWorld.getMetaCoA())
+	// The player realm's displayed arms are stored in save metadata when CoA Designer / a real
+	// custom design was used. Placeholder meta stubs (exit autosaves) must not clobber title/dynasty arms.
+	if (sourceWorld.getPlayerTitle() && *sourceWorld.getPlayerTitle() == country.ck3Title && sourceWorld.getMetaCoA() &&
+		 !isPlaceholderCoA(*sourceWorld.getMetaCoA()))
 		country.coa = sourceWorld.getMetaCoA();
 
 	switch (title.getLevel())
@@ -1805,12 +1821,19 @@ std::string EU5::World::registerDynasty(const std::shared_ptr<CK3::Character>& c
 		dynasty.key = key;
 		if (!house->getLocalizedName().empty())
 			dynasty.rawName = house->getLocalizedName();
-		else if (const auto& locBlock = sourceWorld.getLocalizationMapper().getLocBlockForKey(house->getName()); locBlock)
+		else if (const auto& locBlock = sourceWorld.getLocalizationMapper().getLocBlockForKey(house->getName()); locBlock && !locBlock->english.empty())
 			dynasty.rawName = locBlock->english;
-		else
+		else if (!house->getName().empty())
 			dynasty.rawName = house->getName();
-		// Any of the three sources can be a loc reference ("$dynn_Nakamikado$") rather than a name.
+		// Loc keys / nested refs ("$dynn_Nakamikado$", "dynn_Orsini") become readable text.
 		dynasty.rawName = resolveNestedName(dynasty.rawName, sourceWorld.getLocalizationMapper());
+		if (dynasty.rawName.starts_with("dynn_"))
+		{
+			dynasty.rawName = dynasty.rawName.substr(5);
+			std::ranges::replace(dynasty.rawName, '_', ' ');
+		}
+		if (dynasty.rawName.empty())
+			dynasty.rawName = "House " + std::to_string(house->getID());
 		dynasty.home = country.capital;
 		// EU5 looks up dynasty coats of arms by dynasty key; without one the game shows a
 		// generic fallback, so carry the CK3 dynasty arms over.

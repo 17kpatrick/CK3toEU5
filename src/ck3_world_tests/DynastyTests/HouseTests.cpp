@@ -39,3 +39,17 @@ TEST(CK3World_HouseTests, housePrimitivesCanBeLoaded)
 	EXPECT_EQ("dynnp_de", house.getPrefix());
 	EXPECT_EQ(19, house.getDynasty().first);
 }
+
+TEST(CK3World_HouseTests, meltedNineteenHouseNameTokensCanBeLoaded)
+{
+	std::stringstream input;
+	input << "__unknown_0xcd3 = \"Yamamoto\"\n";
+	input << "__unknown_0xccd = \"dynnp_de\"\n";
+	input << "dynasty = 11522\n";
+
+	const CK3::House house(input, 12080);
+
+	EXPECT_EQ("Yamamoto", house.getLocalizedName());
+	EXPECT_EQ("dynnp_de", house.getPrefix());
+	EXPECT_EQ(11522, house.getDynasty().first);
+}
