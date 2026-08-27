@@ -12,6 +12,8 @@ TEST(Mappers_DevWeightsMapperTests, defaultsHoldWithoutInput)
 	EXPECT_DOUBLE_EQ(0.2, mapper.getBuildingWeight());
 	EXPECT_DOUBLE_EQ(1.2, mapper.getUrbanDensityAllowance());
 	EXPECT_DOUBLE_EQ(0.26, mapper.getCityShareOfUrban());
+	EXPECT_DOUBLE_EQ(1.0, mapper.getCrownBuildingAllowance());
+	EXPECT_DOUBLE_EQ(0.25, mapper.getCitySetupDevBand());
 	EXPECT_DOUBLE_EQ(0.6, mapper.getPopBaseFactor());
 	EXPECT_DOUBLE_EQ(0.03, mapper.getPopDevFactor());
 	EXPECT_DOUBLE_EQ(2.5, mapper.getPopMaxFactor());
@@ -27,6 +29,8 @@ TEST(Mappers_DevWeightsMapperTests, weightsCanBeOverridden)
 	input << "building_weight = 0.5\n";
 	input << "urban_density_allowance = 1.5\n";
 	input << "city_share_of_urban = 0.4\n";
+	input << "crown_building_allowance = 1.5\n";
+	input << "city_setup_dev_band = 0.5\n";
 	input << "pop_base_factor = 0.8\n";
 	input << "pop_dev_factor = 0.05\n";
 	input << "pop_max_factor = 3.0\n";
@@ -39,6 +43,8 @@ TEST(Mappers_DevWeightsMapperTests, weightsCanBeOverridden)
 	EXPECT_DOUBLE_EQ(0.5, mapper.getBuildingWeight());
 	EXPECT_DOUBLE_EQ(1.5, mapper.getUrbanDensityAllowance());
 	EXPECT_DOUBLE_EQ(0.4, mapper.getCityShareOfUrban());
+	EXPECT_DOUBLE_EQ(1.5, mapper.getCrownBuildingAllowance());
+	EXPECT_DOUBLE_EQ(0.5, mapper.getCitySetupDevBand());
 	EXPECT_DOUBLE_EQ(0.8, mapper.getPopBaseFactor());
 	EXPECT_DOUBLE_EQ(0.05, mapper.getPopDevFactor());
 	EXPECT_DOUBLE_EQ(3.0, mapper.getPopMaxFactor());

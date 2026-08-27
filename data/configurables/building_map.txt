@@ -11,10 +11,12 @@
 # become EU5 cathedrals, which vanilla state-owns the same way. Ordinary temple_01..04 convert to
 # nothing; every town setup already includes a pop-owned temple.
 link = { eu5 = cathedral ck3 = holy_site ck3 = cathedral ck3 = hagia_sophia ck3 = notre_dame ck3 = dome_of_the_rock ck3 = damascus_mosque ck3 = duomo_florence ck3 = temple_of_uppsala }
-# Forts: nearly every CK3 castle has baseline curtain walls, which would blanket the map in
-# EU5 forts. Only top-tier fortifications (walls VI+, hill forts VII+) and famous unique
-# walls, citadels and fortress wonders become castles; ordinary walls convert to nothing.
+# Forts: vanilla's own castles and stockades already transfer to the converted map (through town
+# setups and re-tagged building_manager entries), so the regional fort balance is covered. Only
+# famous unique walls and fortress wonders add castles on top; ordinary CK3 walls - even top-tier
+# ones, which late-game saves have on every second holding - convert to nothing. Every castle here
+# is crown-owned and paid for monthly out of the budget capped by crown_building_allowance.
 # _castle (with the underscore) catches named castle wonders like alamut_castle without matching
 # the baseline castle_01..04 buildings every CK3 castle holding has.
-link = { eu5 = castle ck3 = curtain_walls_06 ck3 = curtain_walls_07 ck3 = curtain_walls_08 ck3 = hill_forts_07 ck3 = hill_forts_08 ck3 = theodosian_walls ck3 = aurelian_walls ck3 = gongsanseong_fortress ck3 = jaisalmer_fort ck3 = hotin_fort ck3 = walls_of_benin ck3 = walls_of_genoa ck3 = kano_walls ck3 = york_walls ck3 = citadel ck3 = _castle ck3 = alcazar ck3 = tower_of_london }
+link = { eu5 = castle ck3 = theodosian_walls ck3 = aurelian_walls ck3 = gongsanseong_fortress ck3 = jaisalmer_fort ck3 = hotin_fort ck3 = walls_of_benin ck3 = walls_of_genoa ck3 = kano_walls ck3 = york_walls ck3 = _castle ck3 = alcazar ck3 = tower_of_london }
 link = { eu5 = university ck3 = university ck3 = madrasa }

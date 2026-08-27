@@ -34,6 +34,12 @@ void mappers::DevWeightsMapper::registerKeys()
 	registerKeyword("city_share_of_urban", [this](std::istream& stream) {
 		cityShareOfUrban = std::clamp(commonItems::getDouble(stream), 0.0, 1.0);
 	});
+	registerKeyword("crown_building_allowance", [this](std::istream& stream) {
+		crownBuildingAllowance = std::max(0.0, commonItems::getDouble(stream));
+	});
+	registerKeyword("city_setup_dev_band", [this](std::istream& stream) {
+		citySetupDevBand = std::clamp(commonItems::getDouble(stream), 0.0, 1.0);
+	});
 	registerKeyword("pop_base_factor", [this](std::istream& stream) {
 		popBaseFactor = commonItems::getDouble(stream);
 	});
