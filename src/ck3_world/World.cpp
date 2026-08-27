@@ -338,7 +338,9 @@ void CK3::World::processSave(const std::filesystem::path& saveGamePath, bool deb
 		const auto& melt = save.melt();
 		if (melt.has_unknown_tokens())
 		{
-			Log(LogLevel::Error) << "Rakaly reports errors while melting ironman save!";
+			// CK3 1.19+ writes tokens rakaly has not catalogued yet (jens_153, __unknown_0xcd3, …).
+			// Those melt as opaque keys we already alias; the save is still usable.
+			Log(LogLevel::Warning) << "Rakaly saw unknown CK3 tokens while melting; conversion continues.";
 		}
 
 		melt.writeData(saveGame.gamestate);

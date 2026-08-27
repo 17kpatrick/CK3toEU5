@@ -977,6 +977,9 @@ void EU5::World::resolveCountryIdentity(const CK3::World& sourceWorld,
 		if (!metaName.empty())
 			country.displayName = metaName;
 	}
+	// EU5 appends the rank itself ("$ADJ$ Empire"). A leftover "Empire" in the loc name
+	// becomes "Arabian Empire Empire" and the game flags the tag as invalid.
+	country.displayName = stripRankWords(country.displayName);
 	country.adjective = resolveAdjective(sourceWorld, title, country.displayName);
 	country.color = title.getColor();
 	if (title.getCoA() && title.getCoA()->second)
@@ -1290,6 +1293,39 @@ void EU5::World::recordPastReigns(const CK3::Title& title, const std::shared_ptr
 	for (const auto& [name, count]: namesakes)
 		if (const auto key = gameDatabase.getNameKey(name); !key.empty())
 			country.regnalNames[key] = std::max(country.regnalNames[key], count);
+
+	// Previous holders can outlive a usurpation, so their death is later than the current
+	// succession. EU5 treats any overlap — or an open current term followed by later ones —
+	// as a load error. Clamp past reigns to the current start and keep only a clean sequence.
+	if (country.reignStart)
+	{
+		std::erase_if(country.pastReigns, [&country](const PastReign& reign) {
+			return reign.characterKey.empty() || reign.startDate >= *country.reignStart;
+		});
+		for (auto& reign: country.pastReigns)
+			if (reign.endDate > *country.reignStart)
+				reign.endDate = *country.reignStart;
+		std::erase_if(country.pastReigns, [](const PastReign& reign) {
+			return reign.endDate <= reign.startDate;
+		});
+		std::ranges::sort(country.pastReigns, [](const PastReign& lhs, const PastReign& rhs) {
+			return lhs.startDate < rhs.startDate;
+		});
+		std::vector<PastReign> sequential;
+		std::optional<date> cursor;
+		for (auto reign: country.pastReigns)
+		{
+			if (cursor && reign.startDate < *cursor)
+				reign.startDate = *cursor;
+			if (reign.endDate <= reign.startDate)
+				continue;
+			cursor = reign.endDate;
+			sequential.push_back(std::move(reign));
+		}
+		country.pastReigns = std::move(sequential);
+		if (cursor && *country.reignStart < *cursor)
+			country.reignStart = *cursor;
+	}
 }
 
 void EU5::World::assignConsortAndHeir(const CK3::Title& title, const std::shared_ptr<CK3::Character>& holder, Country& country, const CK3::World& sourceWorld)
